@@ -15,39 +15,62 @@
 	
 	<body>
 		<div class="ct-chart ct-perfect-fourh"></div>
-
+		
 		<script>
-			var data = {
-				labels: ['This', 'Total messages'],
-				series: [50, 800]
-			};
+			var coments_count = '{{ coments_count }}';
+			var total_comments = '{{ total_comments }}';
+			var topics = '{{ topics | tojson }}';
+			var messages_in_topics = '{{ messages_in_topics | tojson }}';
 
-			var options = {
-				labelInterpolationFnc: function (value) {
-					return value[0]
-				},
-				height: 600,
-				width: 800
-			};
+			console.log("topics : ", topics);
+			console.log("messages_in_topics : ", messages_in_topics);
+			coments_count = parseInt(coments_count);
+			total_comments = parseInt(total_comments);
+			topics = JSON.parse(topics);
+			messages_in_topics = JSON.parse(messages_in_topics);
 
-			var responsiveOptions = [
-				['screen and (min-width: 640px)', {
-					chartPadding: 30,
-					labelOffset: 100,
-					labelDirection: 'explode',
-					labelInterpolationFnc: function (value) {
-						return value;
-					}
-				}],
-				['screen and (min-width: 1024px)', {
-					labelOffset: 50,
-					chartPadding: 50
-				}]
-			];
+			var username = '{{ username }}';
+			var total_text = "Total messages";
+			var username_text = username + "'s messages";
 
-			new Chartist.Pie('.ct-chart', data, options, responsiveOptions);
-	
+			var chart = new Chartist.Bar('.ct-chart', {
+					labels: topics,
+					series: [
+						messages_in_topics
+					],
+					
+				}, {
+					seriesBarDistance: 60,
+					height: 400,
+					width: 600
+				});	
 		</script>
+		<div class="jumbotron">
+		
+			<table border="1">
+				<caption>{{username}}'s info</caption>
+				<tr>
+					<th>Total comments</th>
+					{% for topic in topics %}
+					<th>{{topic}}</th>
+					{% endfor %}
+				</tr>
+				<tr>
+					<td>{{coments_count}}</td>
+					{% for msg in messages_in_topics %}
+					<th>{{msg}}</th>
+					{% endfor %}
+				</tr>
+			</table>
+		</div>
+	
+		<!-- <h1>{{username}}'s info:</h1>
+			<h2>Total comments : {{coments_count}}</h2>
+			{%set topics_count = topics.length%}
+			<h2>Topics : ({{total_topics}} total)</h2>
+			{% for topic in topics %}
+				<h5>{{topic}}</h5>
+			{% endfor %} -->
 	</body>
  
 </html>

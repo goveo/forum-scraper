@@ -35,8 +35,10 @@ class ForumSpider(scrapy.Spider):
     current_page = 1
     COMMENTS_PER_PAGE = 20
     urls = [
-        'https://forums.drom.ru/altai/t1152288384.html',
-        'https://forums.drom.ru/irkutsk/t1151106744.html'
+        # 'https://forums.drom.ru/altai/t1152288384.html',
+        # 'https://forums.drom.ru/irkutsk/t1151106744.html',
+        # 'https://forums.drom.ru/altai/t1152412012.html',
+        'https://forums.drom.ru/altai/t1151213164.html'
     ]
 
     def start_requests(self):
