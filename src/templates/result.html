@@ -1,17 +1,12 @@
 <!doctype html>
 <html>
    <body>
-   
-      <table border = 1>
-         {% for key, value in result.items() %}
-         
-            <tr>
-               <th> {{ key }} </th>
-               <td> {{ value }} </td>
-            </tr>
-            
-         {% endfor %}
-      </table>
+		<table border = 1>
+			result: {{result}}
+			count: {{ count }}
+			total_comments: {{ total_comments }}
+			username: {{ username }}
+		</table>
       
    </body>
 </html>

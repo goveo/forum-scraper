@@ -25,10 +25,23 @@ def index():
 
 @app.route('/search', methods = ['POST', 'GET'])
 def result():
-	
 	if request.method == 'POST':
 		result = request.form
-		return render_template("result.html", result = result)
+		username = result.get('username', type=str)
+		print("username : ", username)
+
+		commnets_count = db.comments.find( {"author": username }).count()
+		print("commnets_count : ", commnets_count)
+		if (commnets_count == 0):
+			return render_template("result.html", error = 'Wrong username') 
+		else:
+			total_comments = db.comments.find().count()
+
+		return render_template(
+			"result.html",
+			count = commnets_count,
+			total_comments = total_comments,
+			username = username)
 
 if __name__ == "__main__":
 	app.run(debug=True)
