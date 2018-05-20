@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Python Flask Bucket List App</title>
+ 
+ 
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+	<script src="http://code.jquery.com/jquery.js"></script>
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+ 
+        <div class="jumbotron">
+            <h1>Search info by user</h1>
+            <form action = "http://localhost:5000/search" method="POST">
+                <p>Username<input type="text" name="username"/></p>
+                <p><input type="submit" value="search"/></p>
+            </form>
+            <div class="content">
+                <h4>All users list:</h4>
+                {% for value in result %}
+                    <p> {{ value }} </p>
+                {% endfor %}
+            </div>
+
+
+        </div>
+ 
+    </div>
+</body>
+ 
+</html>

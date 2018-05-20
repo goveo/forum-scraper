@@ -2,7 +2,6 @@ import scrapy
 import re
 from bs4 import BeautifulSoup
 import pymongo
-# from pymongo import MongoClient
 from pymongo import MongoClient
 import os
 import sys
@@ -36,7 +35,8 @@ class ForumSpider(scrapy.Spider):
     current_page = 1
     COMMENTS_PER_PAGE = 20
     urls = [
-        'https://forums.drom.ru/altai/t1152288384.html'
+        'https://forums.drom.ru/altai/t1152288384.html',
+        'https://forums.drom.ru/irkutsk/t1151106744.html'
     ]
 
     def start_requests(self):
@@ -103,14 +103,11 @@ class ForumSpider(scrapy.Spider):
         parsed_uri = urlparse(href)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
 
-        print('domain : ', domain)
         href = response.xpath('//span[@class="prev_next"]/a[@rel="next"]/@href').extract_first()
-        print('href : ', href)
         next_page_link = domain + href
-        # try:
-        #     href = href[0]
-        # except:
-        #     href = None
+        # print('domain : ', domain)
+        # print('href : ', href)
+
         return next_page_link
 
     def save_comment_in_database(self, comment):

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+	<head>
+		<title>lab 2</title>
+	
+	
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+		
+		<script src="http://code.jquery.com/jquery.js"></script>
+		<script scr="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.min.js"></script>
+		<script src="./chartist.min.js"></script>
+	</head>
+	
+	<body>
+		<div class="ct-chart ct-perfect-fourh"></div>
+
+		<script>
+			var data = {
+				labels: ['This', 'Total messages'],
+				series: [50, 800]
+			};
+
+			var options = {
+				labelInterpolationFnc: function (value) {
+					return value[0]
+				},
+				height: 600,
+				width: 800
+			};
+
+			var responsiveOptions = [
+				['screen and (min-width: 640px)', {
+					chartPadding: 30,
+					labelOffset: 100,
+					labelDirection: 'explode',
+					labelInterpolationFnc: function (value) {
+						return value;
+					}
+				}],
+				['screen and (min-width: 1024px)', {
+					labelOffset: 50,
+					chartPadding: 50
+				}]
+			];
+
+			new Chartist.Pie('.ct-chart', data, options, responsiveOptions);
+	
+		</script>
+	</body>
+ 
+</html>
