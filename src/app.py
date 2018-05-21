@@ -18,15 +18,18 @@ if (mongo_url == None):
 connection = pymongo.MongoClient(mongo_url)
 db = connection["python_lab2"]
 
+TOPIC_TOP_USERS_COUNT = 10
+
 
 @app.route("/")
 def index():
 	users = db.comments.distinct("author")
-	return render_template('index.html', result = users)
+	topics = db.comments.distinct("topic")
+	return render_template('index.html', result = users, topics = topics)
 
 
-@app.route('/search', methods = ['POST', 'GET'])
-def result():
+@app.route('/search/user', methods = ['POST', 'GET'])
+def search_user():
 	if request.method == 'POST':
 		result = request.form
 		username = result.get('username', type=str)
@@ -48,13 +51,42 @@ def result():
 		total_topics = len(topics)
 
 		return render_template(
-			"chart.html",
+			"userinfo.html",
 			coments_count = commnets_count,
 			total_comments = total_comments,
 			total_topics = total_topics,
 			username = username,
 			topics = topics,
 			messages_in_topics = messages_in_topics)
+
+
+@app.route('/search/topic', methods = ['POST', 'GET'])
+def search_topic():
+	if request.method == 'GET':
+		result = request.args
+		print('result : ', result)
+		topic = result.get('value', type=str)
+		print("topic : ", topic)
+		top = get_top_users_in_topic(topic)
+		users = top['users']
+		comments_counters = top['comments_counters']
+
+		print('users : ', users)
+		print('comments_counters : ', comments_counters)
+
+		comments_total = get_comments_count_by_topic(topic)
+		print('comments_total : ', comments_total)
+
+		if (len(users) == 0):
+			return render_template("error.html", error = 'Something goes wrong')
+		
+		
+		return render_template(
+			"topicinfo.html",
+			authors = users,
+			counts = comments_counters,
+			total = comments_total,
+			topic = topic)
 
 
 def get_topics_by_username(username):
@@ -80,6 +112,28 @@ def get_comments_total_count():
 	comments_count = db.comments.find().count()
 	return comments_count
 
+
+def get_top_users_in_topic(topic, max_value=TOPIC_TOP_USERS_COUNT):
+	
+	comments = db.comments.aggregate([{ "$unwind": "$topic" }, { "$sortByCount": "$author" } ] )
+
+	counter = 0
+	users = []
+	comments_counters = []
+
+	for comment in comments:
+		counter = counter + 1
+
+		if (counter > max_value):
+			break
+
+		comments_counters.append(comment['count'])
+		users.append(comment['_id'])
+
+	return {
+		"users": users,
+		"comments_counters": comments_counters
+	}
 
 
 if __name__ == "__main__":

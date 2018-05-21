@@ -35,9 +35,9 @@ class ForumSpider(scrapy.Spider):
     current_page = 1
     COMMENTS_PER_PAGE = 20
     urls = [
-        # 'https://forums.drom.ru/altai/t1152288384.html',
-        # 'https://forums.drom.ru/irkutsk/t1151106744.html',
-        # 'https://forums.drom.ru/altai/t1152412012.html',
+        'https://forums.drom.ru/altai/t1152288384.html',
+        'https://forums.drom.ru/irkutsk/t1151106744.html',
+        'https://forums.drom.ru/altai/t1152412012.html',
         'https://forums.drom.ru/altai/t1151213164.html'
     ]
 
@@ -113,9 +113,10 @@ class ForumSpider(scrapy.Spider):
         return next_page_link
 
     def save_comment_in_database(self, comment):
-        return db.comments.save({ 
+        data = {
             'author' : comment.author, 
             'text' : comment.text, 
             'date' : comment.date, 
             'topic' : comment.topic
-        })
+        }
+        return db.comments.update(data, data, upsert=True)
