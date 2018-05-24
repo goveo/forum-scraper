@@ -115,13 +115,22 @@ def get_comments_total_count():
 
 def get_top_users_in_topic(topic, max_value=TOPIC_TOP_USERS_COUNT):
 	
-	comments = db.comments.aggregate([{ "$unwind": "$topic" }, { "$sortByCount": "$author" } ] )
-
+	comments = db.comments.aggregate(
+		[
+			{"$match": {"topic": topic}},
+	 		{ "$group": { "_id": "$author", "count": { "$sum": 1 } } },
+			{ "$sort": { "count": -1 } }
+		])
+		
+	
+	
 	counter = 0
 	users = []
 	comments_counters = []
 
 	for comment in comments:
+		
+		print('comment : ', comment)
 		counter = counter + 1
 
 		if (counter > max_value):
@@ -129,6 +138,7 @@ def get_top_users_in_topic(topic, max_value=TOPIC_TOP_USERS_COUNT):
 
 		comments_counters.append(comment['count'])
 		users.append(comment['_id'])
+
 
 	return {
 		"users": users,
