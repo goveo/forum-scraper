@@ -17,10 +17,6 @@
  
         <div class="jumbotron">
             <h1>Search info by topic</h1>
-            <form action = "http://localhost:5000/search/topic" method="POST">
-                <p>Topic<input type="text" name="topic"/></p>
-                <p><input type="submit" value="search"/></p>
-            </form>
             <div class="content">
                 <h4>All topics list:</h4>
                 {% for value in topics %}
