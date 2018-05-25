@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-	
+
 	<head>
 		<title>lab 2</title>
-	
 		<meta charset="UTF-8"> 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 		<meta http-equiv="X-UA-Compatible" content="ie=edge"> 
@@ -29,17 +28,19 @@
 				</tr>
 				{% for i in range(counts|length) %}
 				<tr>
-					<td>{{authors[i]}}</td>
+					<td>
+						<a href="/user?value={{authors[i]}}">{{authors[i]}}</a>
+					</td>
+					
 						
 					<td>{{counts[i]}}</td>
 					</tr>
 					
-					{% endfor %}				
-				</table>
+				{% endfor %}				
+			</table>
 			<h3 class="text-center">Total comments : {{total}}</h3>
 		</div>
 		
-	
 
 		<script>
 			var authors = '{{ authors | tojson}}';
@@ -67,7 +68,6 @@
 					datasets: [{
 						data: counts,
 						label: 'comments',
-						//backgroundColor:'green',
 						borderWidth: 1,
 						borderColor: '#777',
 						hoverBorderWidth: 3,
@@ -78,7 +78,7 @@
 					title: {
 						display: true,
 						text: topic,
-						fontSize: 25
+						fontSize: 20
 					},
 					layout: {
 						padding: {

@@ -23,16 +23,17 @@ TOPIC_TOP_USERS_COUNT = 10
 
 @app.route("/")
 def index():
-	users = db.comments.distinct("author")
-	topics = db.comments.distinct("topic")
-	return render_template('index.html', result = users, topics = topics)
+	users = get_sorted_users()
+	topics = get_sorted_topics()
+	return render_template('index.html', users = users, topics = topics)
 
 
-@app.route('/search/user', methods = ['POST', 'GET'])
+@app.route('/user', methods = ['GET'])
 def search_user():
-	if request.method == 'POST':
-		result = request.form
-		username = result.get('username', type=str)
+	if request.method == 'GET':
+		result = request.args
+		print('result : ', result)
+		username = result.get('value', type=str)
 		print("username : ", username)
 
 		commnets_count = get_comments_count_by_username(username)
@@ -60,7 +61,7 @@ def search_user():
 			messages_in_topics = messages_in_topics)
 
 
-@app.route('/search/topic', methods = ['POST', 'GET'])
+@app.route('/topic', methods = ['GET'])
 def search_topic():
 	if request.method == 'GET':
 		result = request.args
@@ -121,8 +122,6 @@ def get_top_users_in_topic(topic, max_value=TOPIC_TOP_USERS_COUNT):
 	 		{ "$group": { "_id": "$author", "count": { "$sum": 1 } } },
 			{ "$sort": { "count": -1 } }
 		])
-		
-	
 	
 	counter = 0
 	users = []
@@ -145,6 +144,16 @@ def get_top_users_in_topic(topic, max_value=TOPIC_TOP_USERS_COUNT):
 		"comments_counters": comments_counters
 	}
 
+def get_sorted_users():
+	users = db.comments.distinct("author")
+	users.sort()
+	return users
+
+
+def get_sorted_topics():
+	topics = db.comments.distinct("topic")
+	topics.sort()
+	return topics
 
 if __name__ == "__main__":
 	app.run(debug=True)

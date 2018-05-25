@@ -3,43 +3,44 @@
  
 <head>
     <title>lab2</title>
- 
- 
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-	<script src="http://code.jquery.com/jquery.js"></script>
- 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
 </head>
  
 <body>
- 
-    <div class="container">
- 
-        <div class="jumbotron">
-            <h1>Search info by topic</h1>
+    <div class="jumbotron">
+        <div class="container">
             <div class="content">
-                <h4>All topics list:</h4>
-                {% for value in topics %}
-                    <p>
-                        <a href="/search/topic?value={{value}}">{{ value }}</a>
-                    </p>
-                {% endfor %}
+                <h1 class="text-center">All topics list:</h1>
+                <table class="table text-center">
+                    {% for topic in topics %}
+                    <tr>
+                        <td>
+                            <a href="/topic?value={{topic}}">{{ topic }}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                
+                
+                <h1 class="text-center">All users list:</h1>
+                <table class="table text-center">
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            <a href="/user?value={{user}}">{{ user }}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
             </div>
-            <h1>Search info by user</h1>
-            <form action = "http://localhost:5000/search/user" method="POST">
-                <p>Username<input type="text" name="username"/></p>
-                <p><input type="submit" value="search"/></p>
-            </form>
-            <div class="content">
-                <h4>All users list:</h4>
-                {% for value in result %}
-                    <p> {{ value }} </p>
-                {% endfor %}
-            </div>
-
-
         </div>
- 
+        <p class="text-center">Scraped from 
+            <a href="https://forums.drom.ru/">https://forums.drom.ru/</a>
+        </p>
     </div>
 </body>
  

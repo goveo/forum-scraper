@@ -3,18 +3,40 @@
 	
 	<head>
 		<title>lab 2</title>
-	
-	
-		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-		
-		<script src="http://code.jquery.com/jquery.js"></script>
-		<script scr="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.min.js"></script>
-		<script src="../chartist.min.js"></script>
+		<meta charset="UTF-8"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<meta http-equiv="X-UA-Compatible" content="ie=edge"> 
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script> 
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
 	</head>
 	
 	<body>
 		<div class="ct-chart ct-perfect-fourh"></div>
+		
+		<div class="jumbotron">
+			
+			<div class="ml-1 px-2">
+				<button onclick="window.location.href='/'" type="button" class="btn btn-outline-dark">Back</button>
+			</div>
+
+			<canvas id="myChart"></canvas>
+
+			<table class="table text-center">
+				<tr>
+					<th>Total comments</th>
+					{% for topic in topics %}
+						<th>{{topic}}</th>
+					{% endfor %}
+				</tr>
+				<tr>
+					<td>{{coments_count}}</td>
+					{% for msg in messages_in_topics %}
+						<th>{{msg}}</th>
+					{% endfor %}
+				</tr>
+			</table>
+		</div>
+		
 		<script>
 			var coments_count = '{{ coments_count }}';
 			var total_comments = '{{ total_comments }}';
@@ -32,46 +54,40 @@
 			var total_text = "Total messages";
 			var username_text = username + "'s messages";
 
-			var chart = new Chartist.Bar('.ct-chart', {
+			let myChart = document.getElementById('myChart').getContext('2d'); 
+			let massPopChart = new Chart(myChart, {
+				type: 'bar',
+				data: {
 					labels: topics,
-					series: [
-						messages_in_topics
-					],
-					
-				}, {
-					seriesBarDistance: 60,
-					height: 400,
-					width: 600
-				});	
+					datasets: [{
+						data: messages_in_topics,
+						label: 'comments',
+						borderWidth: 1,
+						borderColor: '#777',
+						hoverBorderWidth: 3,
+						hoverBorderColor: '#000'
+					}]
+				},
+				options: {
+					title: {
+						display: true,
+						text: topics,
+						fontSize: 20
+					},
+					layout: {
+						padding: {
+							left: 50,
+							right: 0,
+							bottom: 0,
+							top: 0
+						}
+					},
+					tooltips: {
+						enabled: true
+					}
+				}
+			});
 		</script>
-		<div class="jumbotron">
-		
-			<table border="1">
-				<caption>{{username}}'s info</caption>
-				<tr>
-					<th>Total comments</th>
-					{% for topic in topics %}
-					<th>{{topic}}</th>
-					{% endfor %}
-				</tr>
-				<tr>
-					<td>{{coments_count}}</td>
-					{% for msg in messages_in_topics %}
-					<th>{{msg}}</th>
-					{% endfor %}
-				</tr>
-			</table>
-		</div>
-	
-		<a href="/">Go to index page: </a>
-		
-		<!-- <h1>{{username}}'s info:</h1>
-			<h2>Total comments : {{coments_count}}</h2>
-			{%set topics_count = topics.length%}
-			<h2>Topics : ({{total_topics}} total)</h2>
-			{% for topic in topics %}
-				<h5>{{topic}}</h5>
-			{% endfor %} -->
 	</body>
  
 </html>
