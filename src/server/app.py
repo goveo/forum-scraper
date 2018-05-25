@@ -39,7 +39,7 @@ def search_user():
 		commnets_count = get_comments_count_by_username(username)
 		print("commnets_count : ", commnets_count)
 		if (commnets_count == 0):
-			return render_template("error.html", error = 'Wrong username') 
+			return render_template("error.html", message = 'Wrong username')
 		else:
 			total_comments = get_comments_total_count()
 			
@@ -79,7 +79,7 @@ def search_topic():
 		print('comments_total : ', comments_total)
 
 		if (len(users) == 0):
-			return render_template("error.html", error = 'Something goes wrong')
+			return render_template("error.html", message = 'Wrong topic name')
 		
 		
 		return render_template(

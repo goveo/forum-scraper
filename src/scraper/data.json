@@ -1,0 +1,38 @@
+{
+	"spider_name": "forum spider", 
+	"comments_per_page": 20,
+	"max_comments": 1000,
+	"forum_urls": [
+		"https://forums.drom.ru/american/"
+	],
+    "concrete_urls": [
+        "https://forums.drom.ru/general/t1152412777.html",
+        "https://forums.drom.ru/general/t1152410314.html",
+        "https://forums.drom.ru/general/t1152412750.html",
+        "https://forums.drom.ru/general/t1152412842.html",
+        "https://forums.drom.ru/general/t1152412668.html"
+	],
+	"keys": {
+		"posts" : "//li[@class='postbitlegacy postbitim postcontainer']",
+		"topic" : "//div[@class='pagetitle']/h1/text()",
+		"next_page_link" : "//span[@class='prev_next']/a[@rel='next']/@href"
+	},
+	"post_keys": {
+		"text": {
+			"element": "div",
+			"class": "content"
+		},
+		"answer": {
+			"element": "div",
+			"class": "bbcode_container"
+		},
+		"author": {
+			"element": "div",
+			"class": "username_container"
+		},
+		"date": {
+			"element": "span",
+			"class": "date"
+		}
+	}
+}

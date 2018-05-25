@@ -25,7 +25,10 @@
 				<tr>
 					<th>Total comments</th>
 					{% for topic in topics %}
-						<th>{{topic}}</th>
+						<th>
+							<a href="/topic?value={{topic}}">{{topic}}</a>
+						</th>
+						
 					{% endfor %}
 				</tr>
 				<tr>
@@ -71,7 +74,7 @@
 				options: {
 					title: {
 						display: true,
-						text: topics,
+						text: username,
 						fontSize: 20
 					},
 					layout: {
