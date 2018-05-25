@@ -34,5 +34,6 @@
 			"element": "span",
 			"class": "date"
 		}
-	}
+	},
+	"thread_key": "//h3[@class='threadtitle']/a/@href"
 }

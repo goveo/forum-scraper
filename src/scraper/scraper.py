@@ -28,12 +28,12 @@ class ForumSpider(scrapy.Spider):
     
     try:
         name = data['spider_name']
-        COMMENTS_PER_PAGE = data['comments_per_page']
-        urls = data['concrete_urls']
+        comments_per_page = data['comments_per_page']
+        max_comments = data['max_comments']
         posts_key = data['keys']['posts']
         topic_key = data['keys']['topic']
         next_page_key = data['keys']['next_page_link']
-
+        
         post_text_element = data['post_keys']['text']['element']
         post_text_class = data['post_keys']['text']['class']
         post_answer_element = data['post_keys']['answer']['element']
@@ -42,6 +42,7 @@ class ForumSpider(scrapy.Spider):
         post_author_class = data['post_keys']['author']['class']
         post_date_element = data['post_keys']['date']['element']
         post_date_class = data['post_keys']['date']['class']
+        thread_key = data['thread_key']
 
     except: 
         print("\tERROR: data.json is wrong. Please fill all default fields")
@@ -52,12 +53,36 @@ class ForumSpider(scrapy.Spider):
     except: 
         forum_urls = None
 
+    try:
+        urls = data['concrete_urls']
+    except: 
+        urls = None
+
+    if urls == None and forum_urls == None:
+        print('\tERROR: concrete_urls and forum_urls in data.json is empty. Please fill all default fields')
+        sys.exit(0)
+
     url_counter = 0
     current_page = 1
+    total_counter = 0
+
 
     def start_requests(self):
         for url in self.urls:
             yield scrapy.Request(url=url, callback=self.parse)
+
+        for forum in self.forum_urls:
+            yield scrapy.Request(url=forum, callback=self.parse_forum)
+        
+
+    def parse_forum(self, response):
+        domain = self.get_domain_by_response(response)
+        links = response.xpath(self.thread_key).extract()
+        
+        for link in links:
+            href = "{domain}{link}".format(domain=domain, link=link)
+            yield scrapy.Request(url=href, callback=self.parse)
+
 
     def parse(self, response):
         try:
@@ -71,7 +96,8 @@ class ForumSpider(scrapy.Spider):
             topic = 'unknown'
 
         for post in posts:
-            self.url_counter = self.url_counter + 1
+            self.url_counter += 1
+            self.total_counter += 1
 
             comment = self.parse_post(post, topic)
 
@@ -79,7 +105,11 @@ class ForumSpider(scrapy.Spider):
             print(comment.to_string())
             self.save_comment_in_database(comment)
 
-            if (self.url_counter >= self.COMMENTS_PER_PAGE): 
+            if self.total_counter >= self.max_comments:
+                print('Scrap complete')
+                sys.exit(0)
+
+            if self.url_counter >= self.comments_per_page: 
                 self.url_counter = 0
                 link = self.get_next_page_link_by_response(response)
                 return scrapy.Request(url=link, callback=self.parse)
@@ -109,19 +139,14 @@ class ForumSpider(scrapy.Spider):
 
 
     def get_next_page_link_by_response(self, response):
-        href = str(response)
-        href = href[4:]
-        href = href[:-1]
-        href = href.strip()
-        parsed_uri = urlparse(href)
-        domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
-
+        domain = self.get_domain_by_response(response)
         href = response.xpath(self.next_page_key).extract_first()
         if href == None:
             return None
 
         next_page_link = domain + href
         return next_page_link
+
 
     def save_comment_in_database(self, comment):
         data = {
@@ -131,3 +156,13 @@ class ForumSpider(scrapy.Spider):
             'topic' : comment.topic
         }
         return db.comments.update(data, data, upsert=True)
+
+
+    def get_domain_by_response(self, response):
+        href = str(response)
+        href = href[4:]
+        href = href[:-1]
+        href = href.strip()
+        parsed_uri = urlparse(href)
+        domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+        return domain
